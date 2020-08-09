@@ -1,5 +1,6 @@
 const path = require('path');
 const autoprefixer = require('autoprefixer');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin')
 
 module.exports = [
@@ -48,10 +49,12 @@ module.exports = [
     },
     mode: 'development',
     plugins: [
+      new HtmlWebpackPlugin(),
       new WasmPackPlugin({
         crateDirectory: path.resolve(__dirname, "app-rs"),
         args: "--log-level warn",
         extraArgs: "--target browser",
+        withTypescript: false,
         outDir: path.resolve(__dirname, "pkg"),
         outName: "package",
         forceMode: "development"
@@ -71,6 +74,15 @@ module.exports = [
           ]
         },
         {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'ts-loader',
+            }
+          ]
+        },
+        {
           test: /\.wasm$/,
           type: 'javascript/auto',
           use: [
@@ -81,5 +93,8 @@ module.exports = [
         }
       ]
     },
+    resolve: {
+      extensions: ['.wasm', '.js', '.ts', '.tsx', '.json']
+    }
   }
 ];
