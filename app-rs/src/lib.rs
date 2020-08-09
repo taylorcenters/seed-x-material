@@ -19,6 +19,7 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 #[derive(Default)]
 struct Model {
     time_from_js: Option<String>,
+    slider_position: String,
 }
 
 // ------ ------
@@ -28,6 +29,7 @@ struct Model {
 enum Msg {
     JsReady(bool),
     Tick(String),
+    SliderChange(String),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -49,6 +51,9 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
             }
         }
         Msg::Tick(time) => model.time_from_js = Some(time),
+
+        //SLIDER
+        Msg::SliderChange(value) => model.slider_position = value,
     }
 }
 
@@ -69,6 +74,11 @@ fn view(model: &Model) -> Node<Msg> {
         ],
 
         div![
+          model.slider_position.to_string()
+        ],
+
+        div![
+          //ev(Ev::from("MDCSlider:change"), |event| Msg::SliderChange),
           C!["mdc-slider"],
           attrs!{
             At::from("tabindex") => "0",
@@ -117,8 +127,6 @@ fn view(model: &Model) -> Node<Msg> {
 pub fn start() -> Box<[JsValue]> {
     let app = App::start("app", init, update, view);
 
-    //init_material_components();
-
     create_closures_for_js(&app)
 }
 
@@ -131,7 +139,11 @@ fn create_closures_for_js(app: &App<Msg, Model, Node<Msg>>) -> Box<[JsValue]> {
         app.update(Msg::Tick(time))
     }));
 
-    vec![js_ready, tick].into_boxed_slice()
+    let slider_change = wrap_in_permanent_closure(enc!((app) move |value| {
+        app.update(Msg::SliderChange(value))
+    }));
+
+    vec![js_ready, tick, slider_change].into_boxed_slice()
 }
 
 fn wrap_in_permanent_closure<T>(f: impl FnMut(T) + 'static) -> JsValue
@@ -155,5 +167,4 @@ where
 #[wasm_bindgen]
 extern "C" {
     fn enableClock();
-    fn init_material_components();
 }

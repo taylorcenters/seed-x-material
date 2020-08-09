@@ -1,6 +1,5 @@
 import {MDCSlider} from '@material/slider';
 
-
 window.enableClock = () => {
   const sendTick = () => {
     tick(new Date().toLocaleTimeString());
@@ -13,9 +12,12 @@ window.enableClock = () => {
 };
 
 let run = (wasm) => {
-  const [js_ready, tick] = wasm.start();
+  const [js_ready, tick, slider_change] = wasm.start();
   window.tick = tick;
   js_ready(true);
+
+  let slider = new MDCSlider(document.querySelector('.mdc-slider'));
+  slider.listen('MDCSlider:change', () => slider_change(slider.value.toString()));
 }
 
 async function load() {
@@ -25,4 +27,3 @@ async function load() {
 
 load();
 
-new MDCSlider(document.querySelector('.mdc-slider'));
