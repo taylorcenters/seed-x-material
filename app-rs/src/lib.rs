@@ -57,14 +57,44 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
 // ------ ------
 
 fn view(model: &Model) -> Node<Msg> {
-    h1![
-        style![
-            St::TextAlign => "center"
-            St::MarginTop => unit!(40, vmin)
-            St::FontSize => unit!(10, vmin)
-            St::FontFamily => "monospace"
+    div![
+        h1![
+            style![
+                St::TextAlign => "center"
+                St::MarginTop => unit!(40, vmin)
+                St::FontSize => unit!(10, vmin)
+                St::FontFamily => "monospace"
+            ],
+            model.time_from_js.clone().unwrap_or_default()
         ],
-        model.time_from_js.clone().unwrap_or_default()
+        div![
+          C!["mdc-slider"],
+          div![
+            C!["mdc-slider__track"],
+            div![
+              C!["mdc-slider__track--active"], 
+              div![
+                C!["mdc-slider__track--active_fill"],
+              ],
+            ],
+            div![
+              C!["mdc-slider__track--inactive"],
+            ],
+          ],
+          div![
+            C!["mdc-slider__thumb"],
+            attrs!{
+              At::from("role") => "slider",
+              At::from("tabindex") => "0",
+              At::from("aria-valuemin") => "0",
+              At::from("aria-valuemax") => "100",
+              At::from("aria-valuenow") => "50",
+            },
+            div![
+              C!["mdc-slider__thumb-knob"],
+            ],
+          ],
+        ],
     ]
 }
 

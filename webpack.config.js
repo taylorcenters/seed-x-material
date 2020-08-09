@@ -43,18 +43,20 @@ module.exports = [
     },
   },
   {
-    entry: "./app.js",
+    entry: ["@babel/polyfill", "./app.js"],
     output: {
       filename: "bundle.js"
     },
     mode: 'development',
     plugins: [
-      new HtmlWebpackPlugin(),
+      new HtmlWebpackPlugin({
+        template: 'index.html'
+      }),
       new WasmPackPlugin({
         crateDirectory: path.resolve(__dirname, "app-rs"),
         args: "--log-level warn",
-        extraArgs: "--target browser",
-        withTypescript: false,
+        extraArgs: "--target bundler",
+        withTypescript: true,
         outDir: path.resolve(__dirname, "pkg"),
         outName: "package",
         forceMode: "development"
@@ -68,26 +70,8 @@ module.exports = [
             {
               loader: 'babel-loader',
               query: {
-                presets: ['env']
+                presets: ["@babel/preset-env"]
               }
-            }
-          ]
-        },
-        {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          use: [
-            {
-              loader: 'ts-loader',
-            }
-          ]
-        },
-        {
-          test: /\.wasm$/,
-          type: 'javascript/auto',
-          use: [
-            {
-              loader: 'base64-loader'
             }
           ]
         }

@@ -1,7 +1,5 @@
-//import {MDCSlider} from '@material/slider';
+import {MDCSlider} from '@material/slider';
 
-import init from './pkg/package.js';
-import { start } from './pkg/package.js';
 
 window.enableClock = () => {
   const sendTick = () => {
@@ -14,11 +12,17 @@ window.enableClock = () => {
   }, 1000);
 };
 
-init('./pkg/package_bg.wasm').then(() => {
-  const [js_ready, tick] = start();
+let run = (wasm) => {
+  const [js_ready, tick] = wasm.start();
   window.tick = tick;
   js_ready(true);
-});
+}
 
+async function load() {
+    let wasm = await import('./pkg/package.js')
+    run(wasm);
+}
 
-//new MDCSlider(document.querySelector('.mdc-slider'));
+load();
+
+new MDCSlider(document.querySelector('.mdc-slider'));
