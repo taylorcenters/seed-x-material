@@ -53,7 +53,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::Tick(time) => model.time_from_js = Some(time),
 
         //SLIDER
-        Msg::SliderChange(event) => {log!(event);},
+        Msg::SliderChange(event) => {log!(event.target());},
     }
 }
 
@@ -89,7 +89,7 @@ fn view(model: &Model) -> Node<Msg> {
             At::from("aria-label") => "Select Value",
           },
           div![
-            C!["mdc-sider__track-container"],
+            C!["mdc-slider__track-container"],
             div![
               C!["mdc-slider__track"],
             ],
