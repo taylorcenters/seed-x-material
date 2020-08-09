@@ -17,7 +17,7 @@ let run = (wasm) => {
   js_ready(true);
 
   let slider = new MDCSlider(document.querySelector('.mdc-slider'));
-  slider.listen('MDCSlider:change', () => slider_change(slider.value.toString()));
+  //slider.listen('MDCSlider:change', () => slider_change(slider.value.toString()));
 }
 
 async function load() {

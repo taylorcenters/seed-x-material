@@ -29,7 +29,7 @@ struct Model {
 enum Msg {
     JsReady(bool),
     Tick(String),
-    SliderChange(String),
+    SliderChange(web_sys::Event),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
@@ -53,7 +53,7 @@ fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::Tick(time) => model.time_from_js = Some(time),
 
         //SLIDER
-        Msg::SliderChange(value) => model.slider_position = value,
+        Msg::SliderChange(event) => {log!(event);},
     }
 }
 
@@ -78,7 +78,7 @@ fn view(model: &Model) -> Node<Msg> {
         ],
 
         div![
-          //ev(Ev::from("MDCSlider:change"), |event| Msg::SliderChange),
+          ev(Ev::from("MDCSlider:change"), Msg::SliderChange),
           C!["mdc-slider"],
           attrs!{
             At::from("tabindex") => "0",
