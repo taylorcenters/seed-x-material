@@ -67,34 +67,44 @@ fn view(model: &Model) -> Node<Msg> {
             ],
             model.time_from_js.clone().unwrap_or_default()
         ],
+
         div![
           C!["mdc-slider"],
+          attrs!{
+            At::from("tabindex") => "0",
+            At::from("role") => "slider",
+            At::from("aria-valuemin") => "0",
+            At::from("aria-valuemax") => "100",
+            At::from("aria-valuenow") => "50",
+            At::from("aria-label") => "Select Value",
+          },
           div![
-            C!["mdc-slider__track"],
+            C!["mdc-sider__track-container"],
             div![
-              C!["mdc-slider__track--active"], 
-              div![
-                C!["mdc-slider__track--active_fill"],
+              C!["mdc-slider__track"],
+            ],
+          ],
+          div![
+            C!["mdc-slider__thumb-container"],
+            svg![
+              C!["mdc-slider__thumb"],
+              attrs!{
+                At::from("width") => "21", 
+                At::from("height") => "21", 
+              },
+              circle![
+                attrs!{
+                  At::from("cx") => "10.5",
+                  At::from("cy") => "10.5",
+                  At::from("r") => "7.875",
+                },
               ],
             ],
             div![
-              C!["mdc-slider__track--inactive"],
-            ],
-          ],
-          div![
-            C!["mdc-slider__thumb"],
-            attrs!{
-              At::from("role") => "slider",
-              At::from("tabindex") => "0",
-              At::from("aria-valuemin") => "0",
-              At::from("aria-valuemax") => "100",
-              At::from("aria-valuenow") => "50",
-            },
-            div![
-              C!["mdc-slider__thumb-knob"],
-            ],
-          ],
-        ],
+              C!["mdc-slider__focus-ring"],
+            ]
+          ]
+        ]
     ]
 }
 
@@ -106,6 +116,8 @@ fn view(model: &Model) -> Node<Msg> {
 // `wasm-bindgen` cannot transfer struct with public closures to JS (yet) so we have to send slice.
 pub fn start() -> Box<[JsValue]> {
     let app = App::start("app", init, update, view);
+
+    //init_material_components();
 
     create_closures_for_js(&app)
 }
@@ -143,4 +155,5 @@ where
 #[wasm_bindgen]
 extern "C" {
     fn enableClock();
+    fn init_material_components();
 }
